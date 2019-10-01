@@ -33,7 +33,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <UserCard />
+        <UserCard user={this.state.user} />
         <FollowersCard />
       </div>
     );
