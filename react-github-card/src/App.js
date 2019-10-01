@@ -18,12 +18,15 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    axios
-      .get(userApi)
-      .then(res => {
+    const userPromise = axios.get(userApi);
+    const followersPromise = axios.get(followersApi);
+    Promise.all([userPromise, followersPromise])
+      .then(([userPromiseRes, followersPromiseRes]) => {
+        debugger
         this.setState({
-          user: res.data,
-        })
+          user: userPromiseRes.data,
+          followers: followersPromiseRes.data
+        });
       })
       .catch(error => {
         debugger;
