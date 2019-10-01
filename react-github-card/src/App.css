@@ -32,4 +32,11 @@
   align-items: center;
 }
 
+.sectionFollowers {
+  width: 50%;
+  margin: 2rem;
+  padding: 1rem;
+  border: 1px solid gray;
+}
+
 
