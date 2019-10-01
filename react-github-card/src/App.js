@@ -1,12 +1,13 @@
 import React from "react";
 import "./App.css";
 import axios from "axios";
-import styled from 'styled-components';
+import styled from "styled-components";
 
 import UserCard from "./components/UserCard";
 import FollowersCard from "./components/Followers";
+import SearchCard from "./components/SearchCard";
 
-const userApi = "https://api.github.com/users/petrussola";
+const userApi = `https://api.github.com/users/petrussola`;
 const followersApi = "https://api.github.com/users/petrussola/followers";
 
 const StyledDiv = styled.div`
@@ -22,13 +23,40 @@ class App extends React.Component {
     super(props);
     this.state = {
       user: {},
-      followers: []
+      followers: [],
+      searchTerm: ""
     };
   }
 
+  onChangeSearchHandler = event => {
+    this.setState({
+      searchTerm: event.target.value,
+    });
+  };
+
+  onClickSearchHandler = event => {
+    event.preventDefault();
+    const searchUserPromise = axios.get(`https://api.github.com/users/${this.state.searchTerm}`);
+    const searchUserFollowers = axios.get(`https://api.github.com/users/${this.state.searchTerm}/followers`);
+    Promise.all([searchUserPromise, searchUserFollowers])
+    .then(([searchUserPromiseRes, searchUserFollowersRes]) => {
+      this.setState({
+        user: searchUserPromiseRes.data,
+        followers: searchUserFollowersRes.data,
+      })
+    })
+    .catch(error => {
+      debugger
+    })
+  }
+
   componentDidMount() {
-    const userPromise = axios.get(userApi);
-    const followersPromise = axios.get(followersApi);
+    const userPromise = axios.get(
+      `https://api.github.com/users/petrussola`
+    );
+    const followersPromise = axios.get(
+      `https://api.github.com/users/petrussola/followers`
+    );
     Promise.all([userPromise, followersPromise])
       .then(([userPromiseRes, followersPromiseRes]) => {
         this.setState({
@@ -43,11 +71,18 @@ class App extends React.Component {
 
   render() {
     return (
-      <StyledDiv>
-        <div className='test'></div>
-        <UserCard user={this.state.user} />
-        <FollowersCard followers={this.state.followers} className='section' />
-      </StyledDiv>
+      <div>
+        <SearchCard
+          searchTerm={this.state.searchTerm}
+          onChangeSearchHandler={this.onChangeSearchHandler}
+          onClickSearchHandler={this.onClickSearchHandler}
+        />
+        <StyledDiv>
+          <div className="test"></div>
+          <UserCard user={this.state.user} />
+          <FollowersCard followers={this.state.followers} className="section" />
+        </StyledDiv>
+      </div>
     );
   }
 }
