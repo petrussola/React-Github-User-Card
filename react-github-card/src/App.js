@@ -24,36 +24,19 @@ class App extends React.Component {
     this.state = {
       user: {},
       followers: [],
-      searchTerm: ""
+      searchTerm: "",
     };
   }
 
-  onChangeSearchHandler = event => {
+  onClickSearchHandler = (event, searchTerm) => {
+    event.preventDefault();
     this.setState({
-      searchTerm: event.target.value,
-    });
+      searchTerm: searchTerm,
+    })
   };
 
-  onClickSearchHandler = event => {
-    event.preventDefault();
-    const searchUserPromise = axios.get(`https://api.github.com/users/${this.state.searchTerm}`);
-    const searchUserFollowers = axios.get(`https://api.github.com/users/${this.state.searchTerm}/followers`);
-    Promise.all([searchUserPromise, searchUserFollowers])
-    .then(([searchUserPromiseRes, searchUserFollowersRes]) => {
-      this.setState({
-        user: searchUserPromiseRes.data,
-        followers: searchUserFollowersRes.data,
-      })
-    })
-    .catch(error => {
-      debugger
-    })
-  }
-
   componentDidMount() {
-    const userPromise = axios.get(
-      `https://api.github.com/users/petrussola`
-    );
+    const userPromise = axios.get(`https://api.github.com/users/petrussola`);
     const followersPromise = axios.get(
       `https://api.github.com/users/petrussola/followers`
     );
@@ -62,6 +45,25 @@ class App extends React.Component {
         this.setState({
           user: userPromiseRes.data,
           followers: followersPromiseRes.data
+        });
+      })
+      .catch(error => {
+        debugger;
+      });
+  }
+
+  componentDidUpdate() {
+    const searchUserPromise = axios.get(
+      `https://api.github.com/users/${this.state.searchTerm}`
+    );
+    const searchUserFollowers = axios.get(
+      `https://api.github.com/users/${this.state.searchTerm}/followers`
+    );
+    Promise.all([searchUserPromise, searchUserFollowers])
+      .then(([searchUserPromiseRes, searchUserFollowersRes]) => {
+        this.setState({
+          user: searchUserPromiseRes.data,
+          followers: searchUserFollowersRes.data
         });
       })
       .catch(error => {
