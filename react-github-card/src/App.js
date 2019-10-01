@@ -24,15 +24,15 @@ class App extends React.Component {
     this.state = {
       user: {},
       followers: [],
-      searchTerm: "",
+      searchTerm: ""
     };
   }
 
   onClickSearchHandler = (event, searchTerm) => {
     event.preventDefault();
     this.setState({
-      searchTerm: searchTerm,
-    })
+      searchTerm: searchTerm
+    });
   };
 
   componentDidMount() {
@@ -52,23 +52,25 @@ class App extends React.Component {
       });
   }
 
-  componentDidUpdate() {
-    const searchUserPromise = axios.get(
-      `https://api.github.com/users/${this.state.searchTerm}`
-    );
-    const searchUserFollowers = axios.get(
-      `https://api.github.com/users/${this.state.searchTerm}/followers`
-    );
-    Promise.all([searchUserPromise, searchUserFollowers])
-      .then(([searchUserPromiseRes, searchUserFollowersRes]) => {
-        this.setState({
-          user: searchUserPromiseRes.data,
-          followers: searchUserFollowersRes.data
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.searchTerm !== this.state.searchTerm) {
+      const searchUserPromise = axios.get(
+        `https://api.github.com/users/${this.state.searchTerm}`
+      );
+      const searchUserFollowers = axios.get(
+        `https://api.github.com/users/${this.state.searchTerm}/followers`
+      );
+      Promise.all([searchUserPromise, searchUserFollowers])
+        .then(([searchUserPromiseRes, searchUserFollowersRes]) => {
+          this.setState({
+            user: searchUserPromiseRes.data,
+            followers: searchUserFollowersRes.data
+          });
+        })
+        .catch(error => {
+          debugger;
         });
-      })
-      .catch(error => {
-        debugger;
-      });
+    }
   }
 
   render() {
