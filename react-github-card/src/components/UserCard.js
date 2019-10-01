@@ -10,6 +10,7 @@ const StyledAvatar = styled.div`
   img {
     width: auto;
     height: 100%;
+    border-radius: 100%;
   }
 `;
 
