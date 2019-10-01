@@ -22,10 +22,10 @@
 }
 
 .section {
+  background: #EEEEEE;
   width: 50%;
   margin: 2rem;
   padding: 1rem;
-  border: 1px solid gray;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -36,7 +36,6 @@
   width: 50%;
   margin: 2rem;
   padding: 1rem;
-  border: 1px solid gray;
 }
 
 
